@@ -158,3 +158,36 @@ export const GET_CART = `
     }
   }
 `;
+
+export const UPDATE_CART = `mutation updateCart($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+    cart {
+      id
+      checkoutUrl
+      lines(first: 10) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                product {
+                  title
+                }
+                price {
+                  amount
+                }
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;

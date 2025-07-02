@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { shopifyFetch } from './shopify';
-import { CREATE_CART, ADD_TO_CART, GET_CART } from './graphql/queries';
+import { CREATE_CART, ADD_TO_CART, GET_CART, UPDATE_CART } from './graphql/queries';
+
 
 const CartContext = createContext<any>(null);
 
@@ -63,8 +64,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Update Cart
+
+  const updateCart = async (lineId: string, quantity: number) => {
+    if (!cartId) return;
+
+    const res = await shopifyFetch({
+      query: UPDATE_CART,
+      variables: {
+        cartId,
+        lines: [
+          {
+            id: lineId,
+            quantity,
+          },
+        ],
+      },
+    });
+
+    const cart = res.cartLinesUpdate.cart;
+    setLines(cart.lines.edges);
+    setCheckoutUrl(cart.checkoutUrl);
+  };
+  
+
+  // Update Cart
+
   return (
-    <CartContext.Provider value={{ cartId, checkoutUrl, lines, addToCart }}>
+    <CartContext.Provider value={{ cartId, checkoutUrl, lines, addToCart, updateCart }}>
       {children}
     </CartContext.Provider>
   );

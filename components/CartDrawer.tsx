@@ -10,7 +10,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/lib/cartContext';
 
 export default function CartDrawer({ open, setOpen }) {
-  const { lines, checkoutUrl } = useCart();
+  const { lines, checkoutUrl, updateCart } = useCart();
 
   const subtotal = lines.reduce((total, line) => {
     const price = parseFloat(line.node.merchandise.price.amount || '0');
@@ -56,6 +56,16 @@ export default function CartDrawer({ open, setOpen }) {
 
                           return (
                             <li key={item.id} className='flex py-6'>
+                              {/* + Symbol */}
+                              <button
+                                className='bg-amber-500 cursor-pointer px-2 rounded text-white'
+                                onClick={() =>
+                                  updateCart(item.id, item.quantity + 1)
+                                }
+                              >
+                                +
+                              </button>
+                              {/* + Symbol */}
                               <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
                                 <img
                                   src={image?.url}
@@ -63,6 +73,21 @@ export default function CartDrawer({ open, setOpen }) {
                                   className='h-full w-full object-cover'
                                 />
                               </div>
+                              {/* - Symbol */}
+                              <button
+                                className='bg-amber-400 cursor-pointer px-2 rounded text-white ml-2'
+                                onClick={() => {
+                                  if (item.quantity > 1) {
+                                    updateCart(item.id, item.quantity - 1);
+                                  } else {
+                                    
+                                    updateCart(item.id, 0); 
+                                  }
+                                }}
+                              >
+                                -
+                              </button>
+                              {/* - Symbol */}
 
                               <div className='ml-4 flex flex-1 flex-col'>
                                 <div className='flex justify-between text-base font-medium text-gray-900'>
